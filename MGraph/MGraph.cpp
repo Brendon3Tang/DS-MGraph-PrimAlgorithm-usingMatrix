@@ -2,7 +2,7 @@
 
 //通过静态数组创建图
 //v为包含vertex值的数组，n为vertex的数量，e为edege的数量
-MGraph::MGraph(char v[], int n, int e)
+MGraph::MGraph(int v[], int n, int e)
 {
 	//设置vertex的数量于edge的数量
 	this->vertexNum = n;
@@ -99,6 +99,48 @@ void MGraph::DFS(int v)
 	}
 }
 
+void MGraph::BFSTraverse(int v)
+{
+	//初始化visited数组
+	cleanVisited();
+
+	BFS(v);
+
+	//循环整个visited数组，如果有还未visit的顶点，则以该顶点为起点继续BFS
+	for (int i = 0; i < vertexNum; i++)
+	{
+		if (visited[i] == false)
+			BFS(i);
+	}
+}
+
+void MGraph::BFS(int v)
+{
+	//输出当前顶点，并将顶点push到queue里
+	cout << vertex[v] << " ";
+	visited[v] = true;
+	myQueue.push(vertex[v]);
+
+	//如果队列不为空则循环运行到队列空为止
+	while (!myQueue.empty())
+	{
+		v = myQueue.front();//将队首的值（顶点的编号）传给v
+		myQueue.pop();//pop队首的值
+
+		//循环该顶点在矩阵中对应的行，找到与该顶点相连的其他顶点
+		for (int i = 0; i < vertexNum; i++)
+		{
+			if (arc[v][i] == 1 && visited[i] == false)
+			{
+				myQueue.push(vertex[i]);
+				cout << vertex[i] << " ";	
+				visited[i] = true;
+			}
+		}
+		
+	}
+}
+
 void MGraph::cleanVisited()
 {
 	for (int i = 0; i < MAX_VERTEX; i++)
@@ -113,7 +155,7 @@ int main()
 	int vertexNum, arcNum = 0;
 	cout << "请输入vertex的数量：" << endl;
 	cin >> vertexNum;
-	char *myVertex = new char[vertexNum];
+	int *myVertex = new int[vertexNum];
 	for (int i = 0; i < vertexNum; i++)
 	{
 		cout << "请输入vertex的值：" << endl;
@@ -126,9 +168,14 @@ int main()
 	mg.displayGraph();
 
 	int start;
-	cout << "准备开始深度搜索DFS，请输入起始顶点的编号：" << endl;
+	cout << "准备开始深度搜索DFS，请输入起始顶点的编号：";
 	cin >> start;
 	mg.DFSTraverse(start);
+	cout << endl;
+
+	cout << "准备开始广度搜索BFS，请输入起始顶点的编号：";
+	cin >> start;
+	mg.BFSTraverse(start);
 
 	system("pause");
 	return 0;
