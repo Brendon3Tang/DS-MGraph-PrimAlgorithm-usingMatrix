@@ -24,6 +24,9 @@ MGraph::MGraph(char v[], int n, int e)
 	}
 	//填写matrix，构造graph
 	BuildGraph();
+
+	//初始化visited
+	cleanVisited();
 }
 
 //根据edge为matrix填上值，如果输入两个vertex的编号，则可以在这两个vertex之间增加一条edge，并在matrix上对应位置填入1.
@@ -60,6 +63,50 @@ void MGraph::displayGraph()
 	}
 }
 
+void MGraph::DFSTraverse(int v)
+{
+	//初始化visited数组
+	cleanVisited();
+
+	//深度搜寻编号为v的顶点
+	DFS(v);
+
+	//循环整个visited数组，如果有还未visit的顶点，则以该顶点为起点继续DFS
+	for (int i = 0; i < vertexNum; i++)
+	{
+		if ( visited[i] == false)
+		{
+			DFS(i);
+		}
+		
+	}
+}
+
+void MGraph::DFS(int v)
+{
+	//输出找到的第一个节点，并将该节点的bool设置为true
+	cout << vertex[v] << " ";
+	visited[v] = true;
+
+	//在矩阵中当前顶点的这一行中寻找与当前顶点相连的其他顶点
+	for (int i = 0; i < vertexNum; i++)
+	{
+		//如果该顶点有相连的其他顶点（arc[v][i]==1）且还未visit过的顶点，则递归相邻顶点
+		if (arc[v][i] == 1 && visited[i] == false)
+		{
+			DFS(i);
+		}
+	}
+}
+
+void MGraph::cleanVisited()
+{
+	for (int i = 0; i < MAX_VERTEX; i++)
+	{
+		visited[i] = false;
+	}
+}
+
 int main()
 {
 	
@@ -77,6 +124,11 @@ int main()
 
 	MGraph mg(myVertex, vertexNum, arcNum);
 	mg.displayGraph();
+
+	int start;
+	cout << "准备开始深度搜索DFS，请输入起始顶点的编号：" << endl;
+	cin >> start;
+	mg.DFSTraverse(start);
 
 	system("pause");
 	return 0;

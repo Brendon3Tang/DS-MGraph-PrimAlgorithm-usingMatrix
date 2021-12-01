@@ -10,11 +10,16 @@ private:
 	char vertex[MAX_VERTEX];
 	int arc[MAX_VERTEX][MAX_VERTEX];
 	int vertexNum, arcNum;
+	bool visited[MAX_VERTEX];
+
+	void BuildGraph();
+
+	void DFS(int v);
+
+	void cleanVisited();
 
 public:
 	MGraph(char v[], int n, int e);
-
-	void BuildGraph();
 
 	void displayGraph();
 
